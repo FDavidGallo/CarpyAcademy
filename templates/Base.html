@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="shortcut icon" href="./favicon.ico">
+
+ 
+  {% if request.path == '/cursos' %}
+  <style> .TextoPagCursos {display: grid;
+                         grid-template-columns: repeat(auto-fit, minmax(1fr, 1fr));
+                        margin-left: 50px;}
+          .TextoPagCursos img {border-radius: 5%;}
+  </style> 
+  {% endif %}
     <title>{% block title %}{% endblock %}</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -37,7 +47,7 @@
           <div id="BarraLateral">
             <aside>
              <div id="TITULO">
-                <a href="#index.html"> <h3> CarpyAcademy </h3> </a>
+              <a href="{{ url_for('home') }}"> <h3> CarpyAcademy </h3> </a>
                 <div class="logo">
                   <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
         {% block botones %}    
@@ -50,15 +60,34 @@
           
           <div class="navbar">
             <div></div>
-          <div><a href="#index.html">  🏠 Inicio</a></div>
-            <div><a href="#index.html"> 📚 Cursos</a></div>
-            <div><a href="#index.html">🔍 Sobre nosotros</a></div>
-            <div><a href="#index.html">✉️ Contacto</a></div>
+            <a href="{{ url_for('home') }}">🏠 Inicio</a>
+            <a href="{{ url_for('course') }}">📚 Cursos</a>
+            <a href="{{ url_for('about') }}">🔍 Sobre nosotros</a>
+            <a href="{{ url_for('contact') }}">✉️ Contacto</a>
         </div>
         <div class="MatrizPrincipal">  
-           <div class="Avisos"> <div class="Taviso">    Avisos:</div>  <div class="texto-progresivo">Esta página se encuentra en construcción; en caso de encontrar un bug por favor reportelo.</div></div></div>
-         {% block cursos %}  
-         {% endblock %} 
+          
+          {% if request.path == '/' %}
+          <div class="Avisos"> 
+              <div class="Taviso">Avisos:</div>  
+              <div class="texto-progresivo">Esta página se encuentra en construcción; en caso de encontrar un bug por favor reportelo.</div>
+          </div>
+          {% block cursos %}  
+          {% endblock %}
+      {% elif request.path == '/cursos' %}
+         {% block cursosencursos %}
+            {% block TituloCursos %}
+            {% endblock %}
+            {{ self.cursos() }}
+            {% endblock %}
+      {% endif %}
+      
+
+               
+           
+      
+      
+          
     </div>
 </body>
 </html>
