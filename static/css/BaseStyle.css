@@ -1,0 +1,193 @@
+/*Estos son los estilos predeterminados, que se aplican como base y se heredan al resto de templates*/
+.MatrizPrincipal {
+  display: grid;
+  
+  grid-template-rows: 1fr;
+  gap: 5px 10px;
+;
+}
+.Cursos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 10px;
+  margin-left: 45px;
+  margin-top: 15px;
+}
+
+@keyframes reveal {
+  from { width: 0; }
+  to { width: 100%; }
+}
+body {
+    font-family: Verdana,Arial;
+    margin: 0;
+    padding: 0;
+    background-color: peru; /* Para  mi este es color carpincho*/
+  }
+  aside  /*barra lateral*/ {
+    background-color: #f2f2cb; /* Blanco mantecoso */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 165px; /* Ancho del aside */
+    height: 100%; /* Altura del aside */
+    padding: 20px;
+    display: grid; /* Usar Flexbox */
+    flex-direction: column; /* Orientación vertical */
+    justify-content: top; /* Centrar los elementos verticalmente */
+}
+.logo img {
+  width: 90%; /* Achica la imagen */
+  justify-content: top;
+  position: relative;
+    
+
+}
+.Taviso {
+
+  margin-left: 10px;
+  font-family: monospace;
+}
+.Avisos {
+  overflow: hidden;
+  background-image: url('./static/paper.PNG');
+  background-repeat: repeat;
+  align-items: center;
+  background-size: cover;
+  display: grid;
+  gap: 30px;
+  grid-template-columns:  1fr 1fr 1fr ;
+  list-style-type: none; /* Quita los puntos */
+  margin-left: 1cm;
+  margin-top: 15px;
+  font-family: monospace;
+}
+
+.navbar {
+  overflow: hidden;
+  background-image: url('./static/FondoNavegacion.png');
+  background-repeat: repeat;
+  background-size: cover;
+  display: grid;
+  gap: 15px;
+  grid-template-columns: 20px auto auto auto auto auto;
+  list-style-type: none; /* Quita los puntos */
+}
+
+.navbar a {
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  margin-bottom: 20px;
+  border: 2px black
+}
+
+.navbar a:hover {
+  background-color: green;
+}
+
+
+
+ 
+
+.boton {
+  order: 1; /* Los botones aparecen primero */
+  display: grid;
+  width: 50%;
+  border: none;
+  color: white;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 20px;
+  border-radius: 6px;
+  gap: 10px;
+  }
+  #Cabeza {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+
+  }
+  
+    img {
+    width: 75%;
+    }
+
+   
+      
+  
+    
+    
+  .footer {
+  display: grid;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 100vh;
+  padding: 0 20px 20px 0;
+  }
+  
+  @keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+  }
+
+
+.img {
+width: 100%;
+}
+.tarjeta {
+  border-radius: 15px;
+  margin-left: 10px;
+  gap: 10px 10px;
+  width: 300px;
+  height: 200px;
+  position: relative;
+  perspective: 1000px;
+  display: grid;
+  
+}
+.tarjeta-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+.tarjeta:hover .tarjeta-inner {
+  transform: rotateY(180deg);
+}
+.tarjeta-front, .tarjeta-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+.tarjeta-front {
+  background-size: cover;
+}
+.tarjeta-back {
+  background: #F5F5DC;
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.imagen-uno {
+  background-image: url('./static/InglesA1.png');
+}
+.imagen-dos {
+  background-image: url('./static/CursoTortasFritas.png');
+}
+.imagen-tres {
+  background-image: url('./static/ModeloVistaControlador.jpg');
+}
+.imagen-cuatro {
+  background-image: url('./static/proximamente.png');
+}
+/*ETC */
+

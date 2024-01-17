@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var texto = $('.texto-progresivo').text();
+            var palabras = texto.split(' ');
+            $('.texto-progresivo').empty();
+            $.each(palabras, function(i, palabra) {
+                var span = $('<span>').text(palabra + ' ').css('opacity', 0);
+                $('.texto-progresivo').append(span);
+                span.delay(250 * i).animate({opacity: 1}, 1000);
+            });
+        });
+    </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/BaseStyle.css') }}"> 
+    <style>
+      
+        .grid-container {
+            display: grid;
+            grid-template-columns: minmax(50px, 165px) minmax(15px,auto) ;
+            gap: 5px;
+        }
+        .columna-uno {
+            background-color: #f2f2cb;
+        }
+        .columna-dos {
+            background-color: peru;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="columna-uno">Columna Uno
+          <div id="BarraLateral">
+            <aside>
+             <div id="TITULO">
+                <a href="#index.html"> <h3> CarpyAcademy </h3> </a>
+                <div class="logo">
+                  <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        {% block botones %}    
+        {% endblock %} 
+     </aside>
+         </div>
+        </div>
+        
+        <div class="columna-dos">
+          
+          <div class="navbar">
+            <div></div>
+          <div><a href="#index.html">  🏠 Inicio</a></div>
+            <div><a href="#index.html"> 📚 Cursos</a></div>
+            <div><a href="#index.html">🔍 Sobre nosotros</a></div>
+            <div><a href="#index.html">✉️ Contacto</a></div>
+        </div>
+        <div class="MatrizPrincipal">  
+           <div class="Avisos"> <div class="Taviso">    Avisos:</div>  <div class="texto-progresivo">Esta página se encuentra en construcción; en caso de encontrar un bug por favor reportelo.</div></div></div>
+         {% block cursos %}  
+         {% endblock %} 
+    </div>
+</body>
+</html>
