@@ -2,6 +2,9 @@
 from flask import Flask, request, render_template, redirect, url_for,make_response
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import mysql.connector
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash #las contraseñas se guardan en forma de hash,un toque de seguridad...
+
 import time
 
 app = Flask(__name__) #instanciamos nuestro objeto Flask
@@ -93,6 +96,7 @@ def load_user(user_id):
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
+        password = request.form.get('password')  # Get the password from the form
         cursor = db.cursor()
         query = "SELECT * FROM Usuarios WHERE correo = %s"
         params = (email,)
@@ -100,24 +104,47 @@ def login():
         user = cursor.fetchone()
         cursor.close()  # Close the cursor after fetching the data
         if user:
-            user = User(user[1], user[0])
-            login_user(user)
-            return redirect(url_for('protected'))
+            # Check if the entered password matches the one in the database
+            if check_password_hash(user[3], password):  # Assuming the password is stored in the third column
+                user = User(user[1], user[0])
+                login_user(user)
+                return redirect(url_for('protected'))
+            else:
+                return "Contraseña incorrecta"  # Return an error message
+        else:
+            return "Usuario no encontrado"  # Return an error message
     return render_template('login.html')
+
+
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
+        password = request.form.get('password')  # Obtenemos la contraseña del formulario
         cursor = db.cursor()
-        query = "INSERT INTO Usuarios (nombre, correo) VALUES (%s, %s)"
-        params = (name, email)
+
+        # Checkeamos que el  mail no se encuentre ya registrado
+        query = "SELECT * FROM Usuarios WHERE correo = %s" # se lo preguntamos a la base de datos
+        params = (email,)
+        cursor.execute(query, params)
+        user = cursor.fetchone()
+
+        if user:
+            cursor.close()
+            return "Este correo electrónico ya está registrado. Por favor, intenta con otro."
+
+        hashed_password = generate_password_hash(password)  # Hasheamos la contraseña
+        query = "INSERT INTO Usuarios (nombre, correo, password) VALUES (%s, %s, %s)"
+        params = (name, email, hashed_password)
         cursor.execute(query, params)
         db.commit()
-        cursor.close()  # Close the cursor after committing the data
+        cursor.close()  # Cerramos el cursor para que no se rompa (?)
         return redirect(url_for('login'))
     return render_template('register.html')
+
 
 NombreDelUsuario = "identifiquese"
 
@@ -146,7 +173,7 @@ def logout():
 ------COMPROBACIONES Y PUESTA EN MARCHA------
 ---------------------------------------------
 '''
-print("Hola, esta aplicación web flask fue creada por Fabricio D Gallo")
+print("Hola, esta aplicación web flask fue creada por Fabricio David Gallo")
 if db.is_connected(): #Comprbación de conexión a mysql
     print("Conexión exitosa a la base de datos.")
 else:
