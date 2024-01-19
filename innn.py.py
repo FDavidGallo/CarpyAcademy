@@ -1,5 +1,5 @@
 #importamos todas las librerias necesarias
-from flask import Flask, request, render_template, redirect, url_for,make_response
+from flask import Flask, request, render_template, redirect, url_for,make_response,flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import mysql.connector
 from werkzeug.security import generate_password_hash
@@ -19,28 +19,28 @@ def home():
     if current_user.is_authenticated: #Si el usuario está logueado se muestra su nombre, si no se pide que se loguee
         return render_template('index.html', nombre=NombreDelUsuario)
     else:
-        return render_template('index.html', nombre="identifiquese...")
+        return render_template('index.html', nombre="identifiquese :)")
     
 @app.route('/cursos') #ruta Solo de cursos
 def  cursos():
  if current_user.is_authenticated:
         return render_template('cursos.html', nombre=NombreDelUsuario)
  else:
-    return render_template('cursos.html', nombre="identifiquese...")
+    return render_template('cursos.html', nombre="identifiquese :)")
  
 @app.route('/about') #acerca de...
 def  about():
  if current_user.is_authenticated:
         return render_template('about.html', nombre=NombreDelUsuario)
  else:
-    return render_template('about.html', nombre="identifiquese...")
+    return render_template('about.html', nombre="identifiquese :)")
 
 @app.route('/contacto')
 def  contacto():
  if current_user.is_authenticated:
         return render_template('contacto.html', nombre=NombreDelUsuario)
  else:
-    return render_template('contacto.html', nombre="identifiquese...")
+    return render_template('contacto.html', nombre="identifiquese :)")
  
 @app.route('/query') #esto es para unas pruebas, (en contrución)
 def preguntas():
@@ -61,7 +61,7 @@ def page_not_found(error):
 #Configuración del Login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
-app.secret_key = 'admin'
+app.secret_key = 'admin' #Clave ultrasecreta (?)
 
 # Configuración de la base de datos
 db = mysql.connector.connect(
@@ -95,24 +95,23 @@ def load_user(user_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')  # Get the password from the form
-        cursor = db.cursor()
+        email = request.form.get('email')        # Obtenemos mail y contraseña
+        password = request.form.get('password')  #
+        cursor = db.cursor() #Instanciamos nuestro cursor para la base de datos
         query = "SELECT * FROM Usuarios WHERE correo = %s"
         params = (email,)
         cursor.execute(query, params)
         user = cursor.fetchone()
-        cursor.close()  # Close the cursor after fetching the data
+        cursor.close()  # Importante cerrrar el cursor
         if user:
-            # Check if the entered password matches the one in the database
-            if check_password_hash(user[3], password):  # Assuming the password is stored in the third column
+            # Checkeamos que el usuario haya metido la contraseña correcta
+            if check_password_hash(user[3], password):  # "password" está en la cuarta (tercera desde el 0) columna
                 user = User(user[1], user[0])
                 login_user(user)
                 return redirect(url_for('protected'))
             else:
-                return "Contraseña incorrecta"  # Return an error message
-        else:
-            return "Usuario no encontrado"  # Return an error message
+               flash('Usuario o contraseña incorrectos, si no tiene una cuenta, registrese.')
+               return redirect(url_for('login')) # vuelve a login
     return render_template('login.html')
 
 
@@ -134,7 +133,9 @@ def register():
 
         if user:
             cursor.close()
-            return "Este correo electrónico ya está registrado. Por favor, intenta con otro."
+            flash('Este correo electrónico ya está registrado. Por favor, intenta con otro')
+            return redirect(url_for('register')) # vuelve a login
+           
 
         hashed_password = generate_password_hash(password)  # Hasheamos la contraseña
         query = "INSERT INTO Usuarios (nombre, correo, password) VALUES (%s, %s, %s)"
@@ -159,14 +160,13 @@ def protected():
     cursor.execute(query, params)
     NombreDelUsuario = cursor.fetchone()[0]
     results = cursor.fetchall()
-    cursor.close()  # Close the cursor after fetching the data
-    return f"Estás logueado, {NombreDelUsuario}. ¡Bienvenido!"
-
-@app.route('/logout')
-@login_required
+    cursor.close()  
+   # return f"Estás logueado, {NombreDelUsuario}. ¡Bienvenido!"  --> ignorar
+    return redirect(url_for('home'))
+@app.route('/logout') # Es para que el usurio se desloguee
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 '''
 ---------------------------------------------

@@ -14,5 +14,12 @@
         <input type="password" id="password" name="password" required><br>
         <input type="submit" value="Registrar">
     </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="alert alert-warning">
+        {{ messages[0] }}
+      </div>
+    {% endif %}
+    {% endwith %}
 </body>
 </html>

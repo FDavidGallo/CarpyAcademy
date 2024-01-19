@@ -40,22 +40,22 @@
                 <a href="{{ url_for('home') }}"> <h3> CarpyAcademy </h3> </a>
                 <div class="logo">
                   <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
-          
-               
+                  {% if nombre !="identifiquese :)" %}
                   <div class="MensajeBienvenida"><h1>Hola, {{ nombre }}</h1></div>
+                  <button class="botonLogout" onclick="location.href='{{ url_for('logout') }}'">Salir</button>
+             
+                    
+                {% else  %}
+                <div class="MensajeBienvenida"><h1>Hola, {{ nombre }}</h1></div>
               
                   <div class="boton">
-                    <button class="botonRegistar" onclick="location.href='{{ url_for('login') }}'">Ingresar</button>
+                   <button class="botonRegistar" onclick="location.href='{{ url_for('login') }}'">Ingresar</button>
                    <button class="botonIngresar" onclick="location.href='{{ url_for('register') }}'">Registrarme</button>
-                  
-                  </div>
-                  </a>
-                  </div>       
-                  </div> 
-              
-              
-                 
-                  
+                   
+                </div>
+            </a>
+            </div>    
+                   {% endif %}     
      </aside>
          </div>
         </div>
@@ -79,7 +79,7 @@
             {% block cursos %}  
             {% endblock %}
         {% elif request.path == '/cursos' %}
-           {% block cursosencursos %}
+               {% block cursosencursos %}
               {% block TituloCursos %}
               {% endblock %}
               {{ self.cursos() }}
