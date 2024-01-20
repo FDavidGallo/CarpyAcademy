@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Recuperar Cuenta</title>
+    </head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/BaseStyle.css') }}"> 
+    <style>
+      
+        .grid-container {
+            display: grid;
+            grid-template-columns: minmax(50px, 165px) minmax(15px,auto) ;
+            gap: 5px;
+        }
+        .columna-uno {
+            background-color: #f2f2cb;
+        }
+        .columna-dos {
+            background-color: peru;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="columna-uno">Columna Uno
+          <div id="BarraLateral">
+            <aside>
+             <div id="TITULO">
+                <a href="{{ url_for('home') }}"> <h3> CarpyAcademy </h3> </a>
+                <div class="logo">
+                  <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+                    <p>{{ pregunta }}</p>
+                    <form method="POST">
+                        <label for="Respuesta">Respuesta:</label><br>
+                        <input type="text" id="Respuesta" name="Respuesta" required><br>
+                        <label for="new_password">Nueva Contraseña:</label><br>
+                        <input type="password" id="new_password" name="new_password" required><br>
+                        <input type="submit" value="Recuperar">
+                    </form>
+            </a>
+            </div>       
+     </aside>
+         </div>
+        </div>
+        
+        <div class="columna-dos">
+          
+          <div class="navbar">
+            <div></div>
+            <a href="{{ url_for('home') }}">🏠 Inicio</a>
+            <a href="{{ url_for('cursos') }}">📚 Cursos</a>
+            <a href="{{ url_for('about') }}">🔍 Sobre nosotros</a>
+            <a href="{{ url_for('contacto') }}">✉️ Contacto</a>
+        </div>
+        <div class="MatrizPrincipal">
+          <div>      
+            <div class="Cursos">
+                <body>
+                  <div class="tarjeta">
+                      <div class="tarjeta-inner">
+                          <div class="tarjeta-front imagen-uno"></div>
+                          <div class="tarjeta-back">
+                              <p>Curso de inglés de 0 a A1</p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="tarjeta">
+                      <div class="tarjeta-inner">
+                          <div class="tarjeta-front imagen-dos"></div>
+                          <div class="tarjeta-back">
+                              <p>Parte de nuestra cultura, aprende a hacerlas ;)</p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="tarjeta">
+                    <div class="tarjeta-inner">
+                        <div class="tarjeta-front imagen-tres"></div>
+                        <div class="tarjeta-back">
+                            <p>Descubre el poder del patrón Modelo-Vista-Controlador (MVC) en nuestro curso interactivo. Aprende a estructurar eficientemente tus aplicaciones web y mejora tu habilidad de desarrollo. ¡Inscríbete ahora! 😊</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tarjeta">
+                  <div class="tarjeta-inner">
+                      <div class="tarjeta-front imagen-cuatro"></div>
+                      <div class="tarjeta-back">
+                          <p>Proximamente ...</p>
+                      </div>
+                  </div>
+              </div>
+                  <!-- Agregá más tarjetas para más cursos-->
+              </body></div>
+              
+
+    </div>
+</body>
+</html>
+
+
+

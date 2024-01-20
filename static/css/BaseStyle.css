@@ -139,7 +139,6 @@ body {
 width: 100%;
 }
 .tarjeta {
-  border-radius: 15px;
   margin-left: 10px;
   gap: 10px 10px;
   width: 300px;
@@ -167,6 +166,7 @@ width: 100%;
 }
 .tarjeta-front {
   background-size: cover;
+  border-radius: 5%
 }
 .tarjeta-back {
   background: #F5F5DC;
@@ -176,6 +176,7 @@ width: 100%;
   justify-content: center;
   padding: 20px;
   box-sizing: border-box;
+  border-radius: 5%
 }
 .imagen-uno {
   background-image: url('./static/InglesA1.png');
@@ -190,4 +191,18 @@ width: 100%;
   background-image: url('./static/proximamente.png');
 }
 /*ETC */
+
+.ImagenCirculada {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 5px;
+  margin-left: 100px;
+  margin-top: 15px;
+ 
+}
+.ImagenCirculada img {
+  width: 80%;
+  height: 60%;
+  border-radius: 5%;
+}
 

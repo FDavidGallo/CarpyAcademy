@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registro</title>
-</head>
+{% extends './Base.html' %}
+
+{% block title %}:v{% endblock %}
+{% block styles%}
+
+{% endblock %}
+
+{% block FormularioRegistarse %}
 <body>
-    <h1>Registro</h1>
+    <h1>Registrate</h1>
     <form method="POST">
         <label for="name">Nombre:</label><br>
         <input type="text" id="name" name="name" required><br>
@@ -12,8 +15,13 @@
         <input type="email" id="email" name="email" required><br>
         <label for="password">Contraseña:</label><br>
         <input type="password" id="password" name="password" required><br>
+        <label for="PreguntaSeguridad">Ingresa tu pregunta de Seguridad:</label><br>
+        <input type="PreguntaSeguridad" id="PreguntaSeguridad" name="PreguntaSeguridad" required><br>
+        <label for="RespuestaSeguridad">Ingresa tu respuesta a dicha pregunta:</label><br>
+        <input type="RespuestaSeguridad" id="RespuestaSeguridad" name="RespuestaSeguridad" required><br>
         <input type="submit" value="Registrar">
     </form>
+    
     {% with messages = get_flashed_messages() %}
     {% if messages %}
       <div class="alert alert-warning">
@@ -22,4 +30,16 @@
     {% endif %}
     {% endwith %}
 </body>
-</html>
+{% endblock %}
+
+{% block RegisterBody %}
+
+<body>
+<div class="ImagenCirculada">
+<img src="{{ url_for('static', filename='ContraseñaSegura.png') }}" alt="Logo">
+<img src="{{ url_for('static', filename='Aviso.png') }}" alt="Logo">
+</div>
+</body>
+{% endblock %} 
+
+

@@ -8,7 +8,7 @@ INSTRUCCIONES POR SI QUERES RUNEAR EL PROYECTO (Y/O COPIARLO ;D):
 
 USE APPBD;
 
-CREATE TABLE Usuarios ( id INT AUTO_INCREMENT, nombre VARCHAR(255), correo VARCHAR(255), password VARCHAR(255), PRIMARY KEY (id) );
+CREATE TABLE Usuarios ( id INT AUTO_INCREMENT, nombre VARCHAR(255), correo VARCHAR(255), password VARCHAR(255),PreguntaSeguridad VARCHAR(255),RespuestaSeguridad VARCHAR(255) PRIMARY KEY (id) );
 
  3-Ejecutamos inn.py
  ¡Listo! 

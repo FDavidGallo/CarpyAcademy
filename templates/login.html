@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
+{% extends './Base.html' %}
+
+{% block title %}>>{% endblock %}
+{% block styles%}{% endblock %}
+
+    {% block FormularioLogin %}
+    <body>
+    <h1>Ingresá</h1>
     <form method="POST">
         <label for="email">Correo:</label><br>
         <input type="email" id="email" name="email" required><br>
@@ -17,11 +18,12 @@
     {% if messages %}
       <div class="alert alert-warning">
         {{ messages[0] }}
+        <a href="{{ url_for('RecuperandoCuenta') }}"> <p> Olvidé mi contraseña </p> </a>
+        <a href="{{ url_for('register') }}"> <p> Quiero Registrarme</p> </a>
       </div>
     {% endif %}
     {% endwith %}
 </body>
-</html>
-
+{% endblock %}
 
 

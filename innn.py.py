@@ -1,5 +1,5 @@
 #importamos todas las librerias necesarias
-from flask import Flask, request, render_template, redirect, url_for,make_response,flash
+from flask import Flask, request, render_template, redirect, url_for,make_response,flash,session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import mysql.connector
 from werkzeug.security import generate_password_hash
@@ -92,6 +92,12 @@ def load_user(user_id):
         return User(user[1], user[0])
     return None
 
+#Las siguientes variables son necesarias para poder recuperar la cuenta del usuario
+# el sistema de recuperación consiste en  registrarse con una pregunta secreta  y su respuesta.
+PreguntaSecreta=""
+RespuestaSecreta=""
+RespuestaUsuario=""
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -103,6 +109,8 @@ def login():
         cursor.execute(query, params)
         user = cursor.fetchone()
         cursor.close()  # Importante cerrrar el cursor
+        session['PreguntaSecreta'] = user[4] #Recuperamos la pregunta y respuesta secreta
+        session['RespuestaSecreta'] = user[5]
         if user:
             # Checkeamos que el usuario haya metido la contraseña correcta
             if check_password_hash(user[3], password):  # "password" está en la cuarta (tercera desde el 0) columna
@@ -111,17 +119,43 @@ def login():
                 return redirect(url_for('protected'))
             else:
                flash('Usuario o contraseña incorrectos, si no tiene una cuenta, registrese.')
-               return redirect(url_for('login')) # vuelve a login
-    return render_template('login.html')
+    return render_template('login.html',nombre="logueando")
 
 
 
+@app.route('/RecuperandoCuenta', methods=['GET', 'POST'])  #Esta 
+def RecuperandoCuenta():
+    pregunta_secreta = session.get('PreguntaSecreta')
+    if request.method == 'POST':
+        RespuestaUsuario = request.form.get('Respuesta')
+        new_password = request.form.get('new_password')
+        if session.get('RespuestaSecreta') == RespuestaUsuario:
+            # Generamos el hash de la nueva contraseña
+            hashed_password = generate_password_hash(new_password)
+            # Obtenemos el correo del usuario
+            email = session.get('email')
+            # Actualizamos la contraseña en la base de datos
+            cursor = db.cursor()
+            query = "UPDATE Usuarios SET password = %s WHERE correo = %s"
+            params = (hashed_password, email)
+            cursor.execute(query, params)
+            db.commit()
+            cursor.close()
+            flash('Contraseña cambiada exitosamente')
+            return redirect(url_for('login'))
+        else:
+            flash('Respuesta incorrecta')
+    return render_template('recuperar.html', pregunta=pregunta_secreta)
 
-@app.route('/register', methods=['GET', 'POST'])
+
+
+@app.route('/register', methods=['GET', 'POST']) #para registrarse
 def register():
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
+        PreguntaSeguridad = request.form.get('PreguntaSeguridad') # Estas dos serviran para recuperar la contraseña en caso de que al usuario se le olvide
+        RespuestaSeguridad = request.form.get('RespuestaSeguridad')
         password = request.form.get('password')  # Obtenemos la contraseña del formulario
         cursor = db.cursor()
 
@@ -138,13 +172,13 @@ def register():
            
 
         hashed_password = generate_password_hash(password)  # Hasheamos la contraseña
-        query = "INSERT INTO Usuarios (nombre, correo, password) VALUES (%s, %s, %s)"
-        params = (name, email, hashed_password)
+        query = "INSERT INTO Usuarios (nombre, correo, password,PreguntaSeguridad,RespuestaSeguridad) VALUES (%s, %s, %s,%s,%s)"
+        params = (name, email, hashed_password,PreguntaSeguridad,RespuestaSeguridad)
         cursor.execute(query, params)
         db.commit()
         cursor.close()  # Cerramos el cursor para que no se rompa (?)
         return redirect(url_for('login'))
-    return render_template('register.html')
+    return render_template('register.html', nombre="registrando")
 
 
 NombreDelUsuario = "identifiquese"
@@ -163,10 +197,15 @@ def protected():
     cursor.close()  
    # return f"Estás logueado, {NombreDelUsuario}. ¡Bienvenido!"  --> ignorar
     return redirect(url_for('home'))
+
 @app.route('/logout') # Es para que el usurio se desloguee
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+  
+    
 
 '''
 ---------------------------------------------
