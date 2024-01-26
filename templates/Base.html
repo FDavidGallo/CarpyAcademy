@@ -3,6 +3,7 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <style></style>
     <script>
         $(document).ready(function() {
             var texto = $('.texto-progresivo').text();
@@ -16,20 +17,6 @@
         });
     </script>
   <link rel="stylesheet" href="{{ url_for('static', filename='/css/BaseStyle.css') }}"> 
-    <style>
-      
-        .grid-container {
-            display: grid;
-            grid-template-columns: minmax(50px, 165px) minmax(15px,auto) ;
-            gap: 5px;
-        }
-        .columna-uno {
-            background-color: #f2f2cb;
-        }
-        .columna-dos {
-            background-color: peru;
-        }
-    </style>
 </head>
 <body>
     <div class="grid-container">
@@ -44,7 +31,8 @@
                   {% block FormularioLogin %}{% endblock %}
                   {% elif nombre =="registrando" %}
                   {% block FormularioRegistarse %}{% endblock %}
-                 
+                  {% elif nombre==examen %}
+                  <h1>Suerte en tu examen :)</h1>
                   {% elif nombre !="identifiquese :)" %}
                   <div class="MensajeBienvenida"><h1>Hola, {{ nombre }}</h1></div>
                   <button class="botonLogout" onclick="location.href='{{ url_for('logout') }}'">Salir</button>
@@ -73,26 +61,29 @@
             <a href="{{ url_for('about') }}">🔍 Sobre nosotros</a>
             <a href="{{ url_for('contacto') }}">✉️ Contacto</a>
         </div>
-        <div class="MatrizPrincipal">
-          <div>      
-            {% if request.path == '/' %}
-            <div class="Avisos"> 
-                <div class="Taviso">Avisos:</div>  
-                <div class="texto-progresivo">Esta página se encuentra en construcción; en caso de encontrar un bug por favor reportelo.</div>
-            </div>
-            {% block cursos %}  
-            {% endblock %}
-        {% elif request.path == '/cursos' %}
-               {% block cursosencursos %}
-              {% block TituloCursos %}
+        <div class="MatrizPrincipal">      
+          {% if request.path == '/' %}
+              <div class="Avisos"> 
+                  <div class="Taviso">Avisos:</div>  
+                  <div class="texto-progresivo">Esta página se encuentra en construcción; en caso de encontrar un bug por favor reportelo.</div>
+              </div>
+              {% block cursos %}  
               {% endblock %}
-              {{ self.cursos() }}
-              {% endblock %}
-        {% elif request.path == '/register' %}
-              {% block RegisterBody %}
-              {% endblock %}  
-        {% endif %}
-
-    </div>
+          {% elif request.path == '/cursos' %}
+                 {% block cursosencursos %}
+                {% block TituloCursos %}
+                {% endblock %}
+                {{ self.cursos() }}
+                {% endblock %}
+          {% elif request.path == '/register' %}
+                {% block RegisterBody %}
+                {% endblock %}  
+          {% endif %}
+          {% block AulaCurso %}  
+          {% endblock %}
+          {% block Examen %}  
+          {% endblock %}
+      </div>
+        </div>
 </body>
 </html>

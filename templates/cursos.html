@@ -12,14 +12,25 @@
                       <div class="tarjeta-front imagen-uno"></div>
                       <div class="tarjeta-back">
                           <p>Curso de inglés de 0 a A1</p>
+                          {% if nombre !="identifiquese :)" %}
+                  <button class="IngresarCurso" onclick="location.href='{{ url_for('InglesA1') }}'">Ingresar al curso</button>
+                  {% else  %}
+                  <p>Ingrese o Registrese para ingresar</p>
+                {% endif  %}
                       </div>
                   </div>
               </div>
+
               <div class="tarjeta">
                   <div class="tarjeta-inner">
                       <div class="tarjeta-front imagen-dos"></div>
                       <div class="tarjeta-back">
                           <p>Parte de nuestra cultura, aprende a hacerlas ;)</p>
+                          {% if nombre !="identifiquese :)" %}
+                          <button class="IngresarCurso" onclick="location.href='{{ url_for('InglesA1') }}'">Ingresar al curso</button>
+                          {% else  %}
+                          <p>Ingrese o Registrese para ingresar</p>
+                        {% endif  %}
                       </div>
                   </div>
               </div>
@@ -27,7 +38,12 @@
                 <div class="tarjeta-inner">
                     <div class="tarjeta-front imagen-tres"></div>
                     <div class="tarjeta-back">
-                        <p>Descubre el poder del patrón Modelo-Vista-Controlador (MVC) en nuestro curso interactivo. Aprende a estructurar eficientemente tus aplicaciones web y mejora tu habilidad de desarrollo. ¡Inscríbete ahora! 😊</p>
+                        <p>Descubre el patrón Modelo-Vista-Controlador (MVC). Aprende a estructurar tus aplicaciones web y mejora tu desarrollo😊</p>
+                        {% if nombre !="identifiquese :)" %}
+                        <button class="IngresarCurso" onclick="location.href='{{ url_for('InglesA1') }}'">Ingresar al curso</button>
+                        {% else  %}
+                        <p>Ingrese o Registrese para ingresar</p>
+                      {% endif  %}
                     </div>
                 </div>
             </div>
@@ -41,6 +57,9 @@
           </div>
               <!-- Agregá más tarjetas para más cursos-->
           </body></div>
+          
+        
+
           
          {% endblock %} 
          {% block SeccionAvisos %} 

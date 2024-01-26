@@ -1,0 +1,42 @@
+{% extends './Base.html' %}
+{% block Examen %}  
+<div class="examen">   
+  <h2>Examen :</h2>     
+<form method="POST">
+  <p>Checklist</p>
+  <p class="checkbox-right">
+    <span>Opción 1</span><input type="checkbox" name="checklist" value="opcion1">
+    <span>Opción 2</span><input type="checkbox" name="checklist" value="opcion2">
+    <span>Opción 3</span><input type="checkbox" name="checklist" value="opcion3">
+  </p>
+  <p>Radio<br>
+      <input type="radio" name="radio" value="opcion1"> Opción 1<br>
+      <input type="radio" name="radio" value="opcion2"> Opción 2<br>
+      <input type="radio" name="radio" value="opcion3"> Opción 3<br>
+  </p>
+  <input type="submit" value="Enviar">
+  <p>Checklist<br>
+    <input type="checkbox" name="checklist" value="opcion1"> Opción 1<br>
+    <input type="checkbox" name="checklist" value="opcion2"> Opción 2<br>
+    <input type="checkbox" name="checklist" value="opcion3"> Opción 3<br>
+</p>
+<p>Radio<br>
+    <input type="radio" name="radio" value="opcion1"> Opción 1<br>
+    <input type="radio" name="radio" value="opcion2"> Opción 2<br>
+    <input type="radio" name="radio" value="opcion3"> Opción 3<br>
+</p>
+<input type="submit" value="Enviar">
+<p>Checklist<br>
+  <input type="checkbox" name="checklist" value="opcion1"> Opción 1<br>
+  <input type="checkbox" name="checklist" value="opcion2"> Opción 2<br>
+  <input type="checkbox" name="checklist" value="opcion3"> Opción 3<br>
+</p>
+<p>Radio<br>
+  <input type="radio" name="radio" value="opcion1"> Opción 1<br>
+  <input type="radio" name="radio" value="opcion2"> Opción 2<br>
+  <input type="radio" name="radio" value="opcion3"> Opción 3<br>
+</p>
+<input type="submit" value="Enviar">
+</form>
+</div>
+{% endblock %}

@@ -16,11 +16,9 @@
     </form>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-      <div class="alert alert-warning">
         {{ messages[0] }}
         <a href="{{ url_for('RecuperandoCuenta') }}"> <p> Olvidé mi contraseña </p> </a>
         <a href="{{ url_for('register') }}"> <p> Quiero Registrarme</p> </a>
-      </div>
     {% endif %}
     {% endwith %}
 </body>

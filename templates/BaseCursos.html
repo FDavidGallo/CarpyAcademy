@@ -1,0 +1,146 @@
+{% extends './Base.html' %}
+
+{% block title %}{{ NombreDelCurso }}{% endblock %}
+
+<style>
+ 
+</style>
+
+
+{% block AulaCurso %}
+<div id="titulocurso">
+<h3><i>---Bienvenido al curso {{ NombreDelCurso }}---</i></h3>
+</div>
+<div class="Aula">
+
+    {% if ClasesDelCurso|length != 0 %}
+    {% for item in ClasesDelCurso %}
+    
+    <div class="nota"> 
+        {% if loop.index0 == 0 %}
+            {% for clave, valor in Aula0.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 0 %}
+            {% for clave, valor in Aula1.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 1 %}
+            {% for clave, valor in Aula2.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 2 %}
+            {% for clave, valor in Aula3.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 3 %}
+            {% for clave, valor in Aula4.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 4 %}
+            {% for clave, valor in Aula5.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 5 %}
+            {% for clave, valor in Aula6.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 6 %}
+            {% for clave, valor in Aula7.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 7 %}
+            {% for clave, valor in Aula8.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 8 %}
+            {% for clave, valor in Aula9.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 9 %}
+            {% for clave, valor in Aula10.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        {% if loop.index0 == 10 %}
+            {% for clave, valor in Aula5.items() %}
+            <ul> <li>
+                <a href="{{ valor }}">{{ clave }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+        {% endif %}
+        <div class="nota-content">
+            <p> {{ item }}</p>
+        </div>
+    </div>
+</article>
+    {% endfor %}   
+{% endif %}
+<div class="BotonesCurso">
+    {%if  NotaCurso == 0%}
+    <p></p>
+    {% else %}
+    <p> Tu nota actual en este curso es de {{NotaCurso}}/10</p>
+    {% endif %}
+    {%if  NotaCurso >= 6%}
+    <a href="{{ url_for(ExamenCurso) }}" style="display: inline-block; margin-bottom: 5px; padding: 10px 20px; color: white; background-color: #c7751d; text-decoration: none; border-radius: 5px;">
+        Generar certificado
+      </a>
+    {% else %}
+    <p>Método de corrección: nota más alta</p>
+    <p>Recuerda que puedes repetir este examen las veces que te haga falta ;)</p>
+    {% endif %}
+    
+    <a href="{{ url_for(ExamenCurso) }}" style="display: inline-block; padding: 10px 20px; color: white; background-color: #007BFF; text-decoration: none; border-radius: 5px;">
+      Examen del curso
+    </a>
+    
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}
