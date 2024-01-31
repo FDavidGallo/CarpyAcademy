@@ -1,0 +1,32 @@
+{% extends './Base.html' %}
+{% block Examen %}  
+<div class="examen">   
+  <h2>Examen :</h2>     
+<form method="POST">
+  <p> ¿Donde se celebra la Fiesta Nacional de la Torta Frita?</p>
+      <span>En CABA.</span><input type="radio" name="pregunta1" value="N" required>
+      <span>En Mercedes, Corrientes</span><input type="radio" name="pregunta1" value="N"required>
+      <span>En mercedes, Provincia de Buenos Aires </span><input type="radio" name="pregunta1" value="KK" required>
+    
+<p>¿Cuales son los ingredientes de la torta frita tradicional?<br>
+  <span>Harina, grasa/aceite,sal y agua.</span><input type="radio" name="pregunta2" value="KK" required>
+  <span>Harina, grasa/aceite,sal y leche.</span><input type="radio" name="pregunta2" value="N" required>
+  <span>Harina, grasa/aceite,azúcar y agua. </span><input type="radio" name="pregunta2" value="N" required>
+</p>
+<p>¿De que trata la nobela grafica "Torta Fritas de Polenta"?<br>
+  <span>Sobre las vivencias de excombatientes de Malvinas.</span><input type="radio" name="pregunta3" value="KK" required>
+  <span>Sobre familias pobres durante el gobierno de Perón</span><input type="radio" name="pregunta3" value="N" required>
+  <span>Sobre Charly García</span><input type="radio" name="pregunta3" value="N" required>
+</p>
+
+<p>¿Qué nombre reciben las tortas fritas en Perú?<br>
+  <span>Cachanga</span><input type="radio" name="pregunta4" value="KK">
+  <span>Chipá Cuerito.</span><input type="radio" name="pregunta4" value="N">
+</p>
+<p>¿Existen alternativas veganas y aptas para celiacos de las tortas fritas?<br>
+  <span>Si.</span><input type="radio" name="pregunta5" value="KK">
+  <span>No.</span><input type="radio" name="pregunta5" value="N">
+</p>
+<input type="submit" value="Enviar">
+
+{% endblock %}

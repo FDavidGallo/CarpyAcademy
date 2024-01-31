@@ -43,7 +43,7 @@ Esto se debe a que un atributo en la base de datos es 'NULL'... mi consejo, no m
 COMO AÑADIR UN CURSO:
 1)- Agregamos  el  nombre del nuevo curso en nuestra base de datos, por ej:
 ALTER TABLE NotasExamenes
-ADD COLUMN NOMBREDELNUEVOCURSO INT DEFAULT 0;
+ADD COLUMN NOMBREDELNUEVOCURSO DOUBLE DEFAULT 0;
 
 2)- agregamos la ruta
 @app.route('/Curso') 

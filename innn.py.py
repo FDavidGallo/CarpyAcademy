@@ -4,101 +4,11 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import mysql.connector
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash #las contraseñas se guardan en forma de hash,un toque de seguridad...
-
+from datetime import datetime
 import time
 NombreDelUsuario="identifiquese :)" #Valor por defecto del nombre del usuario (esto soluciona un bug)
 app = Flask(__name__) #instanciamos nuestro objeto Flask
-'''
----------------------------------------------
--------------SECCIÓN DE RUTAS---------------- 
----------------------------------------------
-'''
-#Acá van todas las rutas que no conllevan conexión a base de datos
-# para ver las que si, vaya a la sección de "CONFIGURACIONES"
-@app.route('/') #ruta principal
-def home():
-    if current_user.is_authenticated: #Si el usuario está logueado se muestra su nombre, si no se pide que se loguee
-          try:       #este control de  errores es por si la sesión del usuario ha exppirado 
-            params = (idUsuario,)
-            return render_template('index.html', nombre=NombreDelUsuario)
-          except NameError:
-              logout_user()  
-              return render_template('index.html', nombre="identifiquese :)")          
-    else:
-        return render_template('index.html', nombre="identifiquese :)")
-    
-@app.route('/cursos') #ruta Solo de cursos
-def  cursos():
- if current_user.is_authenticated:
-        return render_template('cursos.html', nombre=NombreDelUsuario)
- else:
-    return render_template('cursos.html', nombre="identifiquese :)")
- 
-@app.route('/about') #acerca de...
-def  about():
- if current_user.is_authenticated:
-        return render_template('about.html', nombre=NombreDelUsuario)
- else:
-    return render_template('about.html', nombre="identifiquese :)")
 
-@app.route('/contacto')
-def  contacto():
- if current_user.is_authenticated:
-        return render_template('contacto.html', nombre=NombreDelUsuario)
- else:
-    return render_template('contacto.html', nombre="identifiquese :)")
- 
-@app.route('/query') #esto es para unas pruebas, (en contrución)
-def preguntas():
-    return make_response('Hola mundo', 200)
-
-@app.route('/InglesA1') 
-def  InglesA1():
-    if current_user.is_authenticated:
-        try:       #este control de  errores es por si la sesión del usuario ha exppirado o intenta ingresar al curso sin pasar por login
-            cursor = db.cursor()
-            query = "SELECT InglesA1 FROM NotasExamenes WHERE id = %s"
-            params = (idUsuario,)
-            cursor.execute(query, params)
-            NotaCurso = cursor.fetchone()[0]
-            results = cursor.fetchall()
-            cursor.close()  
-            return render_template('BaseCursos.html',ExamenCurso="InglesA1Examen", NotaCurso=NotaCurso, nombre=NombreDelUsuario,NombreDelCurso="Inglés A1", ClasesDelCurso=["Bienvenida","Aula 1","Aula2","Aula3","Aula 4"],Aula0= {'Google': 'https://www.google.com', 'Bing': 'https://www.bing.com'},Aula1={},Aula2={},Aula3={},Aula4={},Aula5={},Aula6={},Aula7={},Aula8={},Aula9={},Aula10={})
-        except NameError:
-         logout_user()
-         return redirect(url_for('home'))    
-    else:
-        return redirect(url_for('home'))
-@app.route('/InglesA1Examen', methods=['GET', 'POST'])
-def InglesA1Examen():
-    if request.method == 'POST':
-        email = request.form.get('email')        # Obtenemos mail y contraseña
-        password = request.form.get('password')  #
-        cursor = db.cursor() #Instanciamos nuestro cursor para la base de datos
-        query = "SELECT * FROM Usuarios WHERE correo = %s"
-        params = (email,)
-        cursor.execute(query, params)
-        user = cursor.fetchone()
-        cursor.close()  # Importante cerrrar el cursor
-        session['PreguntaSecreta'] = user[4] #Recuperamos la pregunta y respuesta secreta
-        session['RespuestaSecreta'] = user[5]
-        if user:
-            # Checkeamos que el usuario haya metido la contraseña correcta
-            if check_password_hash(user[3], password):  # "password" está en la cuarta (tercera desde el 0) columna
-                user = User(user[1], user[0])
-                login_user(user)
-                return redirect('InglesA1.html',nombre="examen")
-            else:
-               flash('Usuario o contraseña incorrectos, si no tiene una cuenta, registrese.')
-    return render_template('InglesA1.html',nombre="examen")
-
-
-@app.errorhandler(404) #en caso de que el usuario se meta a un lugar que no existe
-def page_not_found(error):
-    # Redirige al usuario a la página de inicio después de 5 segundos
-    Respuesta404 = make_response("Disculpe, no pudimos encontrar la página que busca ... Será redirigido al Inicio", 404)
-    Respuesta404.headers['Refresh'] = '5;url=' + url_for('home')
-    return Respuesta404
 '''
 ---------------------------------------------
 ------------CONFIGURACIONES------------------ 
@@ -125,7 +35,29 @@ class User(UserMixin): # para más info de UserMixin, buscá la documentación d
     def __init__(self, email, id): # esto es más que nada para  poder usar el metódo "is_authenticated"
         self.id = id
         self.email = email
- 
+# Creamos nuestra clase examen
+class Examen(): 
+    def __init__(self, NombreDelCurso, NombreDelUsuario): 
+        self.NombreDelUsuario = NombreDelUsuario
+        self.NombreDelCurso = NombreDelCurso
+    @staticmethod
+    def ObtenerFechaActual(): # Obtener la fecha actual
+        FechaActual = datetime.now()
+        # Formatear la fecha en el formato día/mes/año
+        FechaEnFormato = FechaActual.strftime("%d/%m/%Y")
+        return FechaEnFormato
+    #fecha=Examen.ObtenerFechaActual()
+    def CorregirExamen(self, RespuestaExamen):
+        RespuestaExamen[:] = [respuesta for respuesta in RespuestaExamen if respuesta is not None]
+        RespuestaExamenUnida = ''.join(RespuestaExamen) 
+        Nota = (RespuestaExamenUnida.count('K'))  #Debe haber 10 "K" en nuestro formulario
+        RespuestaExamen.clear() 
+        return Nota
+
+#Retornamos "Nota", que es un número del 1 al 10
+# Llamar al método CorregirExamen
+#  nota = mi_examen.CorregirExamen(RespuestaExamen)
+ExamenCurso = Examen("NombreDelCurso", "NombreDelUsuario")
 @login_manager.user_loader
 def load_user(user_id):
     cursor = db.cursor() #sé que hay formas más  livianas, pero no se me ocurrió otra cosa que un cursor
@@ -262,14 +194,132 @@ def logout():
 # Cada vez que el usuario da una respuesta se suma un elemento  cadena a la lista "RespuestaExamen"
 # de ser correcta la misma será una K, caso contrario será otro caracter
 
-def CorregirExamen(RespuestaExamen):
-  RespuestaExamenUnida=''.join(RespuestaExamen) #Unimos todas las respuestas en una sola variable
-  Nota = (RespuestaExamenUnida.count('K'))/ len(RespuestaExamen) #Con este calculo podremos saber, del
-                                                                 # 1 al 10 la nota que sacó
-  RespuestaExamen.clear() # Limpiamos la lista
-  return Nota   #Retornamos "Nota", que es un número del 1 al 10
-# La forma correcta de llamar esta función es con:
-# "Nota = CorregirExamen(RespuestaExamen)".
+'''
+---------------------------------------------
+-------------SECCIÓN DE RUTAS---------------- 
+---------------------------------------------
+'''
+#Acá van todas las rutas que no conllevan conexión a base de datos
+# para ver las que si, vaya a la sección de "CONFIGURACIONES"
+@app.route('/') #ruta principal
+def home():
+    if current_user.is_authenticated: #Si el usuario está logueado se muestra su nombre, si no se pide que se loguee
+          try:       #este control de  errores es por si la sesión del usuario ha exppirado 
+            params = (idUsuario,)
+            return render_template('index.html', nombre=NombreDelUsuario)
+          except NameError:
+              logout_user()  
+              return render_template('index.html', nombre="identifiquese :)")          
+    else:
+        return render_template('index.html', nombre="identifiquese :)")
+    
+@app.route('/cursos') #ruta Solo de cursos
+def  cursos():
+ if current_user.is_authenticated:
+        return render_template('cursos.html', nombre=NombreDelUsuario)
+ else:
+    return render_template('cursos.html', nombre="identifiquese :)")
+ 
+@app.route('/about') #acerca de...
+def  about():
+ if current_user.is_authenticated:
+        return render_template('about.html', nombre=NombreDelUsuario)
+ else:
+    return render_template('about.html', nombre="identifiquese :)")
+
+@app.route('/contacto')
+def  contacto():
+ if current_user.is_authenticated:
+        return render_template('contacto.html', nombre=NombreDelUsuario)
+ else:
+    return render_template('contacto.html', nombre="identifiquese :)")
+ 
+@app.route('/query') #esto es para unas pruebas, (en contrución)
+def preguntas():
+    return make_response('Hola mundo', 200)
+
+@app.route('/InglesA1') 
+def  InglesA1():
+    if current_user.is_authenticated:
+        try:       #este control de  errores es por si la sesión del usuario ha exppirado o intenta ingresar al curso sin pasar por login
+            cursor = db.cursor()
+            query = "SELECT InglesA1 FROM NotasExamenes WHERE id = %s"
+            params = (idUsuario,)
+            cursor.execute(query, params)
+            NotaCurso = cursor.fetchone()[0]
+            results = cursor.fetchall()
+            cursor.close()  
+            return render_template('BaseCursos.html',ExamenCurso="InglesA1Examen", NotaCurso=NotaCurso, nombre=NombreDelUsuario,NombreDelCurso="Inglés A1", ClasesDelCurso=["Bienvenida","Aula 1","Aula2","Aula3","Aula 4"],Aula0= {'Google': 'https://www.google.com', 'Bing': 'https://www.bing.com'},Aula1={},Aula2={},Aula3={},Aula4={},Aula5={},Aula6={},Aula7={},Aula8={},Aula9={},Aula10={})
+        except NameError:
+         logout_user()
+         return redirect(url_for('home'))    
+    else:
+        return redirect(url_for('home'))
+@app.route('/InglesA1Examen', methods=['GET', 'POST'])
+def InglesA1Examen():
+     return redirect(url_for('PagEnConstrucion'))  
+@app.route('/TortasFritas') 
+def  TortasFritas():
+    if current_user.is_authenticated:
+        try:       #este control de  errores es por si la sesión del usuario ha exppirado o intenta ingresar al curso sin pasar por login
+            cursor = db.cursor()
+            query = "SELECT TortasFritas FROM NotasExamenes WHERE id = %s" #Buscamos la nota actual en la base de datos
+            params = (idUsuario,)
+            cursor.execute(query, params)
+            NotaCurso = cursor.fetchone()[0]
+            results = cursor.fetchall()
+            cursor.close()  
+            return render_template('BaseCursos.html',ExamenCurso="TortasFritasExamen", NotaCurso=NotaCurso, nombre=NombreDelUsuario,NombreDelCurso="Haciendo tortas fritas", ClasesDelCurso=["Bienvenida","Sobre la fiesta  nacional de la Torta Frita","Recetario Youtube"],Aula0= {'Apostilla/Manual del curso': 'https://drive.google.com/file/d/1QvnSJscOUZ-S9eZtdehEbx0aFSz9duOp/view?usp=sharing', 'Apoyo del canal Elu Sweets': 'https://www.youtube.com/watch?v=ZLIK_sY25Hw'},Aula1={'Más detalles en fiestasnacionales.org':'https://fiestasnacionales.org/FiestasPopulares/FiestaDetalle/373','La Torta Frita más Grande del Mundo - Mercedes':'https://www.youtube.com/watch?v=mp9KuwX2YI0'},Aula2={'Receta tradicional':'https://www.youtube.com/watch?v=ZLIK_sY25Hw&t=35s','Receta sin TACC':'https://www.youtube.com/watch?v=I-gu-azqdgQ'},Aula3={},Aula4={},Aula5={},Aula6={},Aula7={},Aula8={},Aula9={},Aula10={})
+        except NameError:
+         logout_user()
+         return redirect(url_for('home'))    
+    else:
+        return redirect(url_for('home'))
+@app.route('/TortasFritasExamen', methods=['GET', 'POST'])
+def TortasFritasExamen():
+    if request.method == 'POST':
+       RespuestaExamen.append(request.form.get('pregunta1'))        # Obtenemos los resultados
+       RespuestaExamen.append(request.form.get('pregunta2')) 
+       RespuestaExamen.append(request.form.get('pregunta3')) 
+       RespuestaExamen.append(request.form.get('pregunta4')) 
+       RespuestaExamen.append(request.form.get('pregunta5'))
+       NotaNueva = ExamenCurso.CorregirExamen(RespuestaExamen)
+       if current_user.is_authenticated:
+        try:       #este control de  errores es por si la sesión del usuario ha exppirado o intenta ingresar al curso sin pasar por login
+            cursor = db.cursor()
+            query = "SELECT TortasFritas FROM NotasExamenes WHERE id = %s" #Buscamos la nota anterior
+            params = (idUsuario,)
+            cursor.execute(query, params)
+            NotaVieja = cursor.fetchone()[0]
+            results = cursor.fetchall()
+            cursor.close()
+            if NotaNueva > NotaVieja: #Si  la nota nueva es mayor a la actual, la guardamos en la base de datos
+                NotaCurso=NotaNueva
+                cursor = db.cursor()
+                query = "UPDATE NotasExamenes SET TortasFritas = %s WHERE id = %s"
+                params = (NotaCurso, idUsuario)
+                cursor.execute(query, params)
+                db.commit()  # Commiteamos  los cambios
+                cursor.close()
+            else:  
+                NotaCurso=NotaVieja
+            return render_template('BaseCursos.html',ExamenCurso="TortasFritasExamen", NotaCurso=NotaCurso, nombre=NombreDelUsuario,NombreDelCurso="Haciendo tortas fritas", ClasesDelCurso=["Bienvenida","Sobre la fiesta  nacional de la Torta Frita","Recetario Youtube"],Aula0= {'Apostilla/Manual del curso': 'https://drive.google.com/file/d/1QvnSJscOUZ-S9eZtdehEbx0aFSz9duOp/view?usp=sharing', 'Apoyo del canal Elu Sweets': 'https://www.youtube.com/watch?v=ZLIK_sY25Hw'},Aula1={'Más detalles en fiestasnacionales.org':'https://fiestasnacionales.org/FiestasPopulares/FiestaDetalle/373','La Torta Frita más Grande del Mundo - Mercedes':'https://www.youtube.com/watch?v=mp9KuwX2YI0'},Aula2={'Receta tradicional':'https://www.youtube.com/watch?v=ZLIK_sY25Hw&t=35s','Receta sin TACC':'https://www.youtube.com/watch?v=I-gu-azqdgQ'},Aula3={},Aula4={},Aula5={},Aula6={},Aula7={},Aula8={},Aula9={},Aula10={})
+        except NameError:
+         logout_user()
+         return redirect(url_for('home'))    
+    else:
+        return render_template('TortasFritas.html',nombre="examen")
+@app.errorhandler(404) #en caso de que el usuario se meta a un lugar que no existe
+def page_not_found(error):
+    # Redirige al usuario a la página de inicio después de 5 segundos
+    Respuesta404 = make_response("Disculpe, no pudimos encontrar la página que busca ... Será redirigido al Inicio", 404)
+    Respuesta404.headers['Refresh'] = '5;url=' + url_for('home')
+    return Respuesta404
+@app.route('/Upps', methods=['GET'])
+def PagEnConstrucion():
+    RespuestaConst = make_response("Disculpe, esto todavía está en contrucción... Será redirigido al Inicio", 404)
+    RespuestaConst.headers['Refresh'] = '5;url=' + url_for('home')
+    return RespuestaConst
 
 '''
 ---------------------------------------------
@@ -283,5 +333,7 @@ else:
     print("No se pudo conectar a la base de datos.")
 
 if __name__ == "__main__": #¿Nuestra objeto flask se instanció correctamente?
+    RespuestaExamen=["aahahj","kkka"]
+    ExamenDeApp = Examen("NombreDelCurso", "NombreDelUsuario") #instanciamos nuestro objeto "Examen"
     app.run(debug=True)    # entonces  ejecutar en modo debuggin
 

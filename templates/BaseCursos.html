@@ -25,7 +25,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 0 %}
+        {% if loop.index0 == 1 %}
             {% for clave, valor in Aula1.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -33,7 +33,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 1 %}
+        {% if loop.index0 == 2 %}
             {% for clave, valor in Aula2.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -41,7 +41,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 2 %}
+        {% if loop.index0 == 3 %}
             {% for clave, valor in Aula3.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -49,7 +49,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 3 %}
+        {% if loop.index0 == 4 %}
             {% for clave, valor in Aula4.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -57,7 +57,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 4 %}
+        {% if loop.index0 == 5 %}
             {% for clave, valor in Aula5.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -65,7 +65,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 5 %}
+        {% if loop.index0 == 6 %}
             {% for clave, valor in Aula6.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -73,7 +73,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 6 %}
+        {% if loop.index0 == 7 %}
             {% for clave, valor in Aula7.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -81,7 +81,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 7 %}
+        {% if loop.index0 == 8 %}
             {% for clave, valor in Aula8.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -89,7 +89,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 8 %}
+        {% if loop.index0 == 9 %}
             {% for clave, valor in Aula9.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -97,7 +97,7 @@
             </ul>
             {% endfor %}
         {% endif %}
-        {% if loop.index0 == 9 %}
+        {% if loop.index0 == 10 %}
             {% for clave, valor in Aula10.items() %}
             <ul> <li>
                 <a href="{{ valor }}">{{ clave }}</a>
@@ -121,7 +121,7 @@
     {% endfor %}   
 {% endif %}
 <div class="BotonesCurso">
-    {%if  NotaCurso == 0%}
+    {%if  NotaCurso == 0 %}
     <p></p>
     {% else %}
     <p> Tu nota actual en este curso es de {{NotaCurso}}/10</p>

@@ -4,6 +4,7 @@
     <title>{% block title %}{% endblock %}</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <style></style>
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}"> <!--Sé que debería ser un icon, pero sirve igual-->
     <script>
         $(document).ready(function() {
             var texto = $('.texto-progresivo').text();
@@ -31,7 +32,7 @@
                   {% block FormularioLogin %}{% endblock %}
                   {% elif nombre =="registrando" %}
                   {% block FormularioRegistarse %}{% endblock %}
-                  {% elif nombre==examen %}
+                  {% elif nombre=="examen" %}
                   <h1>Suerte en tu examen :)</h1>
                   {% elif nombre !="identifiquese :)" %}
                   <div class="MensajeBienvenida"><h1>Hola, {{ nombre }}</h1></div>
