@@ -5,8 +5,16 @@ import mysql.connector
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash #las contraseñas se guardan en forma de hash,un toque de seguridad...
 from datetime import datetime
+from flask import send_file
+from PIL import Image, ImageDraw, ImageFont
+from os import path
+import tempfile
 import time
+import io
+import os
+
 NombreDelUsuario="identifiquese :)" #Valor por defecto del nombre del usuario (esto soluciona un bug)
+NombreDelCurso="Ninguno"
 app = Flask(__name__) #instanciamos nuestro objeto Flask
 
 '''
@@ -53,11 +61,56 @@ class Examen():
         Nota = (RespuestaExamenUnida.count('K'))  #Debe haber 10 "K" en nuestro formulario
         RespuestaExamen.clear() 
         return Nota
-
+    @staticmethod
+    def GenerarCertificado(NombreDelUsuario,NombreDelCurso,FechaActual):
+      if current_user.is_authenticated:
+            try:
+                NombreDelCurso=NombreCurso
+                if NombreDelCurso!="Ninguno":
+                 cursor = db.cursor()
+                query = "SELECT nombre FROM Usuarios WHERE id = %s"
+                params = (idUsuario,)
+                cursor.execute(query, params)
+                NombreDelUsuario = cursor.fetchone()[0]
+                results = cursor.fetchall()
+                cursor.close()  
+         # Abrimos la imagen de fondo del certificado
+                imagen = Image.open("c:\\Users\\Usuario\\Desktop\\proyectos\\Palo paje Tech\\CarpyAcademy\\static\\fondo.jpg")
+        # Crear un objeto para dibujar sobre la imagen
+                dibujar = ImageDraw.Draw(imagen)
+        # Especificar el nombre del participante
+                nombre = " "+NombreDelUsuario+" aprobó el curso "+NombreDelCurso
+        # Especificar la fuente y el color del texto
+                fuente = ImageFont.truetype("arial.ttf", 44)
+                color = (234, 165, 46)
+        # Calcular la posición del texto centrado en la imagen
+                ancho, alto = imagen.size
+                ancho_texto = dibujar.textlength(nombre, font=fuente)
+                alto_texto = fuente.size
+                x = (ancho - ancho_texto) // (4.5)
+                y = (alto - alto_texto) // (2.12)
+        # Dibujar el texto sobre la imagen
+                dibujar.text((x, y), nombre, font=fuente, fill=color)
+                nombre="Federación,"+FechaActual
+                x = (ancho - ancho_texto) // (0.75)
+                y = (alto - alto_texto) // (1.02)
+                dibujar.text((x, y), nombre, font=fuente, fill=color)
+        # Guardar el certificado en formato PDF
+                imagen.save("certificado.pdf")
+                global response
+                response = send_file("certificado.pdf",mimetype='application/pdf', as_attachment=True, download_name='certificado.pdf')
+                # Importar el módulo psutil
+                return response
+            except NameError:
+                    logout_user()
+                    return redirect(url_for('home'))  
+      else:
+         return render_template('about.html', nombre="identifiquese :)")
+       
 #Retornamos "Nota", que es un número del 1 al 10
 # Llamar al método CorregirExamen
 #  nota = mi_examen.CorregirExamen(RespuestaExamen)
-ExamenCurso = Examen("NombreDelCurso", "NombreDelUsuario")
+ExamenCurso = Examen(NombreDelCurso, "NombreDelUsuario")
 @login_manager.user_loader
 def load_user(user_id):
     cursor = db.cursor() #sé que hay formas más  livianas, pero no se me ocurrió otra cosa que un cursor
@@ -85,6 +138,7 @@ RespuestaExamenUnida="hola" #Acá se guardará toda la cadena
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        global email
         email = request.form.get('email')        # Obtenemos mail y contraseña
         password = request.form.get('password')  #
         cursor = db.cursor() #Instanciamos nuestro cursor para la base de datos
@@ -262,6 +316,10 @@ def InglesA1Examen():
 def  TortasFritas():
     if current_user.is_authenticated:
         try:       #este control de  errores es por si la sesión del usuario ha exppirado o intenta ingresar al curso sin pasar por login
+            global SitioAnterior
+            SitioAnterior="TortasFritas"
+            global NombreCurso
+            NombreCurso=" Haciendo Tortas Fritas"
             cursor = db.cursor()
             query = "SELECT TortasFritas FROM NotasExamenes WHERE id = %s" #Buscamos la nota actual en la base de datos
             params = (idUsuario,)
@@ -309,6 +367,18 @@ def TortasFritasExamen():
          return redirect(url_for('home'))    
     else:
         return render_template('TortasFritas.html',nombre="examen")
+    # Definir una ruta para el certificado
+@app.route('/certificar')
+def certificar():
+    # Obtener la fecha actual usando el método de la clase Examen
+    fecha_actual = Examen.ObtenerFechaActual()
+    # Generar el archivo PDF dinámicamente usando el método de la clase Examen
+    pdf = Examen.GenerarCertificado(Examen.NombreDelUsuario, Examen.NombreDelCurso, fecha_actual)
+    # Crear un archivo temporal para guardar el PDF
+        # Enviar el archivo temporal como respuesta
+    return send_file('certificado.pdf', download_name='certificado.pdf', mimetype='application/pdf', as_attachment=True)
+
+
 @app.errorhandler(404) #en caso de que el usuario se meta a un lugar que no existe
 def page_not_found(error):
     # Redirige al usuario a la página de inicio después de 5 segundos
@@ -334,6 +404,6 @@ else:
 
 if __name__ == "__main__": #¿Nuestra objeto flask se instanció correctamente?
     RespuestaExamen=["aahahj","kkka"]
-    ExamenDeApp = Examen("NombreDelCurso", "NombreDelUsuario") #instanciamos nuestro objeto "Examen"
+    Examen = Examen("NombreDelCurso", "NombreDelUsuario") #instanciamos nuestro objeto "Examen"
     app.run(debug=True)    # entonces  ejecutar en modo debuggin
 
