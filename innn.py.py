@@ -405,5 +405,5 @@ else:
 if __name__ == "__main__": #¿Nuestra objeto flask se instanció correctamente?
     RespuestaExamen=["aahahj","kkka"]
     Examen = Examen("NombreDelCurso", "NombreDelUsuario") #instanciamos nuestro objeto "Examen"
-    app.run(debug=True)    # entonces  ejecutar en modo debuggin
+    app.run(debug=False, host='0.0.0.0')    # entonces  ejecutar en modo debuggin
 
